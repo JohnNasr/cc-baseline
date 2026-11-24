@@ -1,0 +1,16 @@
+{
+  "hooks": {
+    "SessionStart": [
+      {
+        "matcher": "startup",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "cd \"${CLAUDE_PLUGIN_ROOT}\" || exit 0; for p in python3 py python; do if $p -c 'import sys; sys.exit(sys.version_info < (3, 10))' >/dev/null 2>&1; then $p -m ccbaseline hook || true; exit 0; fi; done; exit 0",
+            "timeout": 30
+          }
+        ]
+      }
+    ]
+  }
+}

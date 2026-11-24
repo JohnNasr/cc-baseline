@@ -1,0 +1,30 @@
+name: ci
+on: [push, pull_request]
+jobs:
+  test:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+        python: ["3.10", "3.13"]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python }}
+      - name: plugin hook runs without a pip install, whatever the cwd holds
+        shell: bash
+        run: |
+          cmd=$(python -c "import json, os; print(json.load(open(os.path.join(os.environ['GITHUB_WORKSPACE'], 'hooks', 'hooks.json')))['hooks']['SessionStart'][0]['hooks'][0]['command'])")
+          mkdir -p "$RUNNER_TEMP/cfg/projects" && cd "$RUNNER_TEMP"
+          echo 'raise SystemExit("planted module imported")' > random.py
+          echo '{}' | CLAUDE_PLUGIN_ROOT="$GITHUB_WORKSPACE" CLAUDE_CONFIG_DIR="$RUNNER_TEMP/cfg" CC_BASELINE_DB="$RUNNER_TEMP/hook.db" bash -c "$cmd"
+          test -f "$RUNNER_TEMP/hook.db"
+      - run: pip install -e .[dev]
+      - run: pytest -q
+      - name: smoke test on an empty transcripts folder
+        shell: bash
+        run: |
+          mkdir -p empty
+          cc-baseline ingest --root empty --db ci.db
+          echo '{}' | cc-baseline hook --root empty --db ci.db

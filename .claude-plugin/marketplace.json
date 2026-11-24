@@ -1,0 +1,13 @@
+{
+  "name": "cc-baseline",
+  "owner": {
+    "name": "JohnNasr"
+  },
+  "plugins": [
+    {
+      "name": "cc-baseline",
+      "source": "./",
+      "description": "One-line alert at session start when Claude Code's behaviour shifts after an update. Local, no tokens."
+    }
+  ]
+}

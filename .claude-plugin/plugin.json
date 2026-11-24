@@ -1,0 +1,11 @@
+{
+  "name": "cc-baseline",
+  "version": "0.1.0",
+  "description": "Local flight recorder for Claude Code: a one-line alert at session start when its behaviour shifts after an update. Reads your transcripts, uses no tokens and no network.",
+  "author": {
+    "name": "JohnNasr"
+  },
+  "repository": "https://github.com/JohnNasr/cc-baseline",
+  "license": "MIT",
+  "keywords": ["regression", "drift", "transcripts", "telemetry", "hooks"]
+}
